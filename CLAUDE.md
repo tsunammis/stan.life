@@ -19,6 +19,17 @@ below), not an oversight.
 
 `src/` is the web root. Nothing outside `src/` is served.
 
+## Deployment
+
+Hosted on Cloudflare Pages (GitHub Pages was explicitly declined — see
+below). `wrangler.toml` at the repo root declares
+`pages_build_output_dir = "src"` with no build command, since this is
+plain static HTML. That covers repo-side configuration; connecting
+this GitHub repo to a Cloudflare Pages project is a one-time manual
+step in the Cloudflare dashboard (Claude has no access to Cloudflare
+credentials or the dashboard). When connecting it, the production
+branch should be `main`.
+
 ## History
 
 This repo used to be a multi-section Medium-style profile page (bio +
