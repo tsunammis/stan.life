@@ -21,14 +21,32 @@ below), not an oversight.
 
 ## Deployment
 
-Hosted on Cloudflare Pages (GitHub Pages was explicitly declined — see
-below). `wrangler.toml` at the repo root declares
-`pages_build_output_dir = "src"` with no build command, since this is
-plain static HTML. That covers repo-side configuration; connecting
-this GitHub repo to a Cloudflare Pages project is a one-time manual
-step in the Cloudflare dashboard (Claude has no access to Cloudflare
-credentials or the dashboard). When connecting it, the production
-branch should be `main`.
+Hosted on Cloudflare (GitHub Pages was explicitly declined — see
+below), via Cloudflare's unified "Workers Builds" git integration —
+**not** the classic Pages product, even though this is a plain
+static site with no Worker script. That integration's build step
+always runs `wrangler versions upload`, which does not read the
+classic Pages `pages_build_output_dir` field — it needs a static
+assets directory instead. `wrangler.toml` at the repo root declares:
+
+```toml
+[assets]
+directory = "./src"
+```
+
+No `main` (Worker script) is set — none is needed for pure static
+assets. If a future Cloudflare change moves this project back onto
+classic Pages deploys (`wrangler pages deploy`), it would need
+`pages_build_output_dir = "src"` instead — check the actual deploy
+command in the Cloudflare build log before assuming which config key
+applies; the two are not interchangeable and picking the wrong one
+fails with "Missing entry-point to Worker script or to assets
+directory" (this happened once — see git history).
+
+Connecting this GitHub repo to the Cloudflare project in the first
+place is a one-time manual step in the Cloudflare dashboard (Claude
+has no access to Cloudflare credentials or the dashboard). Production
+branch is `main`.
 
 ## History
 
